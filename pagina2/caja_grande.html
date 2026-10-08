@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Control de Herramientas</title>
+  <link rel="icon" href="logo.ico" type="image/x-icon">
+
+  <style>
+    :root {
+      --bg-color: #f4f6f8;
+      --card-bg: #ffffff;
+      --text-color: #2c3e50;
+      --accent-color: #3498db;
+      --completed-color: #95a5a6;
+      --border-color: #e2e8f0;
+      --subtitle-color: #2980b9;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+      margin: 0;
+    }
+
+    .container {
+      background-color: var(--card-bg);
+      width: 100%;
+      max-width: 520px;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-top: 0;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .category-section {
+      margin-bottom: 32px;
+    }
+
+    .category-title {
+      font-size: 1.15rem;
+      color: var(--subtitle-color);
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .task-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+      user-select: none; 
+      -webkit-user-select: none;
+    }
+
+    .task-item:hover {
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .task-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-right: 12px;
+      cursor: pointer;
+      accent-color: var(--accent-color);
+      pointer-events: none; 
+    }
+
+    .task-text {
+      font-size: 0.95rem;
+      flex-grow: 1;
+      cursor: pointer;
+      transition: color 0.2s ease, text-decoration 0.2s ease;
+    }
+
+    .task-item.completed {
+      background-color: #f8fafc;
+      border-color: #e2e8f0;
+    }
+
+    .task-item.completed .task-text {
+      text-decoration: line-through;
+      color: var(--completed-color);
+    }
+
+    /* 🖼️ Estilos para las imágenes de cada nivel */
+    .category-image {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-top: 14px;
+      border: 1px solid var(--border-color);
+      display: block;
+      object-fit: cover;
+    }
+
+    .actions {
+      margin-top: 25px;
+      text-align: center;
+    }
+
+    .btn-reset {
+      background-color: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      padding: 10px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-reset:hover {
+      background-color: #edf2f7;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Lista de herramientas</h1>
+    <div id="categoriesContainer"></div>
+
+    <div class="actions">
+      <button class="btn-reset" onclick="resetList()">Desmarcar todo</button>
+    </div>
+  </div>
+
+  <script>
+    const categorias = [
+      {
+        subtitulo: "Nivel inferior",
+        // ✏️ Coloca aquí el nombre exacto de tu archivo de imagen:
+        imagen: "nivel_inferior.jpg", 
+        palabras: [
+          "Llave torquimétrica",
+          "Tubo para diodos",
+          "Grasa siliconada",
+          "Locktite",
+          "Alcohol",
+          "Cif",
+          "Prolongador",
+          "Osciloscopio",
+          "Llaves tubo con criquet de 1/2",
+          "Llave en T 13mm",
+        ]
+      },
+      {
+        subtitulo: "Nivel superior",
+        // ✏️ Coloca aquí el nombre exacto de tu archivo de imagen:
+        imagen: "nivel_superior.jpg", 
+        palabras: [
+          "3 pilotos amarillos",
+          "1 piloto verde",
+          "2 pilotos rojos",
+          "3 pulsadores negros",
+          "1 pulsador golpe de puño con traba rojo NC",
+          "Tamecos 1/8",
+          "Tamecos M3",
+          "Tornillos 1/8",
+          "Tornillos M3",
+          "Resistencias varias",
+          "Caja con terminales varios",
+          "Diodos de hasta 1A",
+          "Transformador reductor 380/24",
+          "Conectores varios",
+          "Alicate para cables de 25",
+          "Llave 3/4''",
+          "Llave 19mm",
+          "Llave 18mm",
+          "Llave 16mm",
+          "Llave 9/16''",
+          "Llave 14mm",
+          "Llave 13mm",
+          "Llave 1/2''",
+          "Llave 11mm",
+          "Llave 3/8''",
+          "Llave 8mm",
+          "Llave 1/4''",
+	  "Llave 6mm",
+	  "Baldosas chicas y grandes"
+        ]
+      }
+    ];
+
+    const container = document.getElementById('categoriesContainer');
+
+    function renderList() {
+      container.innerHTML = '';
+
+      categorias.forEach((cat, catIndex) => {
+        const section = document.createElement('div');
+        section.className = 'category-section';
+
+        const h2 = document.createElement('h2');
+        h2.className = 'category-title';
+        h2.textContent = cat.subtitulo;
+        section.appendChild(h2);
+
+        const ul = document.createElement('ul');
+        ul.className = 'task-list';
+
+        cat.palabras.forEach((palabra, itemIndex) => {
+          const li = document.createElement('li');
+          li.className = 'task-item';
+          li.onclick = function(event) { handleItemClick(event, this); };
+          
+          const id = `item-${catIndex}-${itemIndex}`;
+
+          li.innerHTML = `
+            <input type="checkbox" id="${id}">
+            <span class="task-text">${palabra}</span>
+          `;
+          ul.appendChild(li);
+        });
+
+        section.appendChild(ul);
+
+        // 🖼️ Inserta la imagen justo después de la lista si está definida
+        if (cat.imagen) {
+          const img = document.createElement('img');
+          img.src = cat.imagen;
+          img.alt = `Fotografía de ${cat.subtitulo}`;
+          img.className = 'category-image';
+          section.appendChild(img);
+        }
+
+        container.appendChild(section);
+      });
+    }
+
+    function handleItemClick(event, listItem) {
+      const checkbox = listItem.querySelector('input[type="checkbox"]');
+      checkbox.checked = !checkbox.checked;
+      
+      if (checkbox.checked) {
+        listItem.classList.add('completed');
+      } else {
+        listItem.classList.remove('completed');
+      }
+    }
+
+    function resetList() {
+      const listItems = document.querySelectorAll('.task-item');
+      listItems.forEach(item => {
+        const checkbox = item.querySelector('input[type="checkbox"]');
+        checkbox.checked = false;
+        item.classList.remove('completed');
+      });
+    }
+
+    renderList();
+  </script>
+
+</body>
+</html>
